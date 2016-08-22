@@ -62,6 +62,7 @@ get '/person/' => sub {
     {result => {person => $person}}; 
 };
 
+### flush PersonGroup
 post '/flush' => sub {
     $FACE->PersonGroup->delete($PERSONGROUP_ID);
     $FACE->PersonGroup->create($PERSONGROUP_ID, name => 'kaotag');
