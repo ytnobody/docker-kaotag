@@ -62,6 +62,18 @@ get '/person/' => sub {
     {result => {person => $person}}; 
 };
 
+post '/person/:personId' {
+    my ($app, $req) = @_;
+    my $person_id = $req->param('id');
+    my $tag = $req->param('tag');
+    if (!defined $person_id || !defined $tag) {
+        return $app->res_error(400 => 'parameter "id" and "tag" is required');
+    }
+    my $person = $FACE->Person->get($PERSONGROUP_ID, $person_id);
+    $FACE->Person->update($PERSONGROUP_ID, name => $person->{name}, userData => join($person->{userData}, $tag));
+    {result => {message => "done"}};
+};
+
 ### flush PersonGroup
 post '/flush' => sub {
     $FACE->PersonGroup->delete($PERSONGROUP_ID);
