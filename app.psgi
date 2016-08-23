@@ -59,10 +59,16 @@ get '/person/' => sub {
     );
     my $candidate = $matched->[0]{candidates}[0];
     my $person    = $FACE->Person->get($PERSONGROUP_ID, $candidate->{personId});
-    {result => {person => $person}}; 
+    {result => {person => $person, face => $face}}; 
 };
 
-post '/person/:personId' {
+get '/persons' => sub {
+    my ($app, $req) = @_;
+    my $result = $FACE->Person->list($PERSONGROUP_ID);
+    {result => $result};
+};
+
+post '/person/:personId' => sub {
     my ($app, $req) = @_;
     my $person_id = $req->param('id');
     my $tag = $req->param('tag');
@@ -73,6 +79,7 @@ post '/person/:personId' {
     $FACE->Person->update($PERSONGROUP_ID, name => $person->{name}, userData => join($person->{userData}, $tag));
     {result => {message => "done"}};
 };
+
 
 ### flush PersonGroup
 post '/flush' => sub {
